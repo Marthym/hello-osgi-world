@@ -1,0 +1,51 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+    <id>how-assembly</id>
+    <formats>
+        <format>tar.bz2</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory/>
+            <useProjectArtifact>false</useProjectArtifact>
+            <unpack>false</unpack>
+            <includes>
+                <include>org.apache.felix:org.apache.felix.main</include>
+            </includes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>bundle</outputDirectory>
+            <useProjectArtifact>false</useProjectArtifact>
+            <unpack>false</unpack>
+            <includes>
+                <include>org.apache.felix:*</include>
+                <include>org.osgi:*</include>
+            </includes>
+            <excludes>
+                <exclude>org.apache.felix:org.apache.felix.main</exclude>
+                <exclude>org.apache.felix:org.apache.felix.framework</exclude>
+            </excludes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>application</outputDirectory>
+            <useProjectArtifact>false</useProjectArtifact>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <excludes>
+                <exclude>org.apache.felix:*</exclude>
+                <exclude>org.osgi:*</exclude>
+            </excludes>
+        </dependencySet>
+    </dependencySets>
+
+    <fileSets>
+        <fileSet>
+            <fileMode>0644</fileMode>
+            <directory>src/main/resources/conf</directory>
+            <outputDirectory>conf</outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>
