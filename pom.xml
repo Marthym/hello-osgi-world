@@ -10,8 +10,8 @@
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <module>how-assembly</module>
         <module>how-rest</module>
+        <module>how-assembly</module>
     </modules>
 
     <properties>
@@ -20,6 +20,8 @@
         <log4j.version>2.8.2</log4j.version>
         <osgi.core.version>6.0.0</osgi.core.version>
         <felix.version>5.6.6</felix.version>
+        <fileinstall.version>3.6.0</fileinstall.version>
+        <gogo.version>1.0.0</gogo.version>
     </properties>
 
     <dependencyManagement>
@@ -58,20 +60,47 @@
                 <version>${felix.version}</version>
             </dependency>
 
+            <!--Framework Goodies-->
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.fileinstall</artifactId>
+                <version>${fileinstall.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.gogo.shell</artifactId>
+                <version>${gogo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.gogo.command</artifactId>
+                <version>${gogo.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.easymock</groupId>
+                        <artifactId>easymock</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.1.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.1.0</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.1</version>
+                <version>3.6.2</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
