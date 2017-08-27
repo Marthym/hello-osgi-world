@@ -1,16 +1,38 @@
 package fr.ght1pc9kc.how;
 
+import io.undertow.Undertow;
+import io.undertow.util.Headers;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(name = "http-server", immediate = true)
 public final class HttpServerComponent {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpServerComponent.class);
+    private static final int HTTP_PORT = 8080;
+
+    private Undertow server;
+
+    public HttpServerComponent() {
+        server = Undertow.builder()
+                .addHttpListener(HTTP_PORT, "localhost")
+                .setHandler(exchange -> {
+                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
+                    exchange.getResponseSender().send("Hello OSGi World");
+                }).build();
+    }
 
     @Activate
     private void startHttpServer() {
-        LOGGER.info("HTTP Server started on port {}", 8888);
+        server.start();
+        LOGGER.info("HTTP Server started on port {}", HTTP_PORT);
+    }
+
+    @Deactivate
+    private void stopHttpServer() {
+        server.stop();
+        LOGGER.info("HTTP Server stopped !");
     }
 }

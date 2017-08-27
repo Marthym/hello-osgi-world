@@ -23,6 +23,7 @@
         <felix-scr.version>2.0.12</felix-scr.version>
         <fileinstall.version>3.6.0</fileinstall.version>
         <gogo.version>1.0.0</gogo.version>
+        <undertow.version>1.4.18.Final</undertow.version>
     </properties>
 
     <dependencyManagement>
@@ -47,6 +48,12 @@
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-slf4j-impl</artifactId>
                 <version>${log4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.undertow</groupId>
+                <artifactId>undertow-core</artifactId>
+                <version>${undertow.version}</version>
             </dependency>
 
             <!--OSGI Framework-->
