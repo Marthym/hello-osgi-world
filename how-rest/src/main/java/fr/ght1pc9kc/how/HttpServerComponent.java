@@ -1,11 +1,9 @@
 package fr.ght1pc9kc.how;
 
+import fr.ght1pc9kc.how.controller.Route;
 import io.undertow.Undertow;
-import io.undertow.util.Headers;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
+import io.undertow.server.RoutingHandler;
+import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xnio.Xnio;
@@ -15,15 +13,15 @@ public final class HttpServerComponent {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpServerComponent.class);
     private static final int HTTP_PORT = 8080;
 
-    private Undertow server;
+    private final Undertow server;
+    private final RoutingHandler routingHandler;
 
     public HttpServerComponent() {
-        this.server = Undertow.builder()
+        routingHandler = new RoutingHandler(true);
+        server = Undertow.builder()
+                .setHandler(routingHandler)
                 .addHttpListener(HTTP_PORT, "localhost")
-                .setHandler(exchange -> {
-                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-                    exchange.getResponseSender().send("Hello OSGi World");
-                }).build();
+                .build();
     }
 
     @Activate
@@ -36,6 +34,15 @@ public final class HttpServerComponent {
     private void stopHttpServer() {
         server.stop();
         LOGGER.info("HTTP Server stopped !");
+    }
+
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+    private void addHttpHandler(Route handler) {
+        routingHandler.get(handler.getRoute(), handler);
+    }
+
+    private void removeHttpHandler(Route handler) {
+        routingHandler.remove(handler.getRoute());
     }
 
     @Reference
