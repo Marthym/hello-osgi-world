@@ -5,8 +5,10 @@ import io.undertow.util.Headers;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xnio.Xnio;
 
 @Component(name = "http-server", immediate = true)
 public final class HttpServerComponent {
@@ -16,7 +18,7 @@ public final class HttpServerComponent {
     private Undertow server;
 
     public HttpServerComponent() {
-        server = Undertow.builder()
+        this.server = Undertow.builder()
                 .addHttpListener(HTTP_PORT, "localhost")
                 .setHandler(exchange -> {
                     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
@@ -34,5 +36,10 @@ public final class HttpServerComponent {
     private void stopHttpServer() {
         server.stop();
         LOGGER.info("HTTP Server stopped !");
+    }
+
+    @Reference
+    private void waitForXnio(Xnio xnio) {
+        LOGGER.debug("XNIO Implementation found: {}", xnio);
     }
 }
